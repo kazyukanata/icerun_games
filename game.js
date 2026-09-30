@@ -1,6 +1,6 @@
 // タイル定義
 // 0: 氷, 1: 壁, 2: スタート, 3: ゴール
-// 4: スイッチ, 5: 可動壁(ON), 6: 可動壁(OFF)
+// 4: スイッチ, 5: 可動壁(ON), 6: 可動壁(OFF), 7: ひび割れ氷, 8: 古代紋章氷
 
 let stages = [
   // --- 1〜5: 7x7 基本 ---
@@ -29,7 +29,7 @@ let stages = [
     ]
   },
 
-  // --- 6〜10: 9x9 応用（同じ氷を2回滑る構造など） ---
+  // --- 6〜10: 9x9 応用 ---
   {
     size: 9,
     map: [
@@ -37,7 +37,7 @@ let stages = [
       [1,2,0,0,0,0,0,3,1],
       [1,0,1,1,0,1,1,0,1],
       [1,0,0,0,0,0,0,0,1],
-      [1,0,1,0,1,0,1,0,1],
+      [1,0,1,0,7,0,1,0,1], // 7: ひび割れ氷
       [1,0,0,0,0,0,0,0,1],
       [1,0,1,1,0,1,1,0,1],
       [1,0,0,0,0,0,0,0,1],
@@ -53,8 +53,8 @@ let stages = [
       [1,2,0,0,0,0,0,0,0,3,1],
       [1,0,1,1,0,1,1,0,1,0,1],
       [1,0,0,0,0,0,0,0,0,0,1],
-      [1,0,1,0,1,4,1,0,1,0,1], // 中央にスイッチ(4)
-      [1,0,0,0,0,5,0,0,0,0,1], // 可動壁(5/6)をスイッチで切り替え
+      [1,0,1,0,1,4,1,0,1,0,1], // 4: スイッチ
+      [1,0,0,0,0,5,0,0,0,0,1], // 5/6: 可動壁
       [1,0,1,0,1,6,1,0,1,0,1],
       [1,0,0,0,0,0,0,0,0,0,1],
       [1,0,1,1,0,1,1,0,1,0,1],
@@ -63,7 +63,7 @@ let stages = [
     ]
   },
 
-  // --- 16〜20: 13x13 さらに複雑 ---
+  // --- 16〜20: 13x13 ---
   {
     size: 13,
     map: [
@@ -105,7 +105,7 @@ let stages = [
     ]
   },
 
-  // --- 26〜30: 17x17 最終 ---
+  // --- 26〜30: 17x17 ---
   {
     size: 17,
     map: [
@@ -154,8 +154,8 @@ function loadStage(n) {
 
   const size = stages[currentStage].size;
   const game = document.getElementById("game");
-  game.style.gridTemplateColumns = `repeat(${size}, 40px)`;
-  game.style.gridTemplateRows = `repeat(${size}, 40px)`;
+  game.style.gridTemplateColumns = `repeat(${size}, 64px)`;
+  game.style.gridTemplateRows = `repeat(${size}, 64px)`;
 
   document.getElementById("stageInfo").textContent =
     `ステージ ${currentStage + 1} / ${stages.length}`;
@@ -176,13 +176,16 @@ function draw() {
       if (player.x === x && player.y === y) {
         div.classList.add("player");
       } else {
-        if (map[y][x] === 0) div.classList.add("ice");
-        if (map[y][x] === 1) div.classList.add("wall");
-        if (map[y][x] === 2) div.classList.add("start");
-        if (map[y][x] === 3) div.classList.add("goal");
-        if (map[y][x] === 4) div.classList.add("switch");
-        if (map[y][x] === 5) div.classList.add("wallOn");
-        if (map[y][x] === 6) div.classList.add("wallOff");
+        const t = map[y][x];
+        if (t === 0) div.classList.add("ice");
+        if (t === 1) div.classList.add("wall");
+        if (t === 2) div.classList.add("start");
+        if (t === 3) div.classList.add("goal");
+        if (t === 4) div.classList.add("switch");
+        if (t === 5) div.classList.add("wallOn");
+        if (t === 6) div.classList.add("wallOff");
+        if (t === 7) div.classList.add("iceCracked");
+        if (t === 8) div.classList.add("iceRune");
       }
 
       game.appendChild(div);
@@ -197,6 +200,17 @@ function move(dir) {
   if (dir === "left") dx = -1;
   if (dir === "right") dx = 1;
 
+  const game = document.getElementById("game");
+  const tiles = game.children;
+  const index = player.y * map[0].length + player.x;
+  const playerEl = tiles[index];
+  playerEl.classList.remove("slideUp","slideDown","slideLeft","slideRight");
+
+  if (dir === "up")    playerEl.classList.add("slideUp");
+  if (dir === "down")  playerEl.classList.add("slideDown");
+  if (dir === "left")  playerEl.classList.add("slideLeft");
+  if (dir === "right") playerEl.classList.add("slideRight");
+
   while (true) {
     let nx = player.x + dx;
     let ny = player.y + dy;
@@ -207,6 +221,16 @@ function move(dir) {
 
     // 壁・ON壁で停止
     if (tile === 1 || tile === 5) break;
+
+    // ひび割れ氷なら落ちる演出（スタートに戻す）
+    if (tile === 7) {
+      player.x = nx;
+      player.y = ny;
+      alert("氷が割れた！スタートに戻る…");
+      player = findStart(map);
+      draw();
+      return;
+    }
 
     // スイッチを踏んだら可動壁を切り替え
     if (tile === 4) {

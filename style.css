@@ -1,7 +1,8 @@
 body {
   font-family: -apple-system, sans-serif;
   text-align: center;
-  background: #eef7ff;
+  background: #050b18;
+  color: #eef7ff;
   margin: 0;
   padding: 0;
 }
@@ -25,6 +26,7 @@ h1 {
   color: white;
   border: none;
   border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.6);
 }
 
 /* ゲーム画面 */
@@ -34,21 +36,73 @@ h1 {
   margin: 10px auto 20px;
 }
 
-/* タイル */
+/* タイル共通 */
 .tile {
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
   border-radius: 6px;
+  background-size: cover;
+  background-position: center;
 }
 
-.ice { background: #cce8ff; }
-.wall { background: #666; }
-.start { background: #8f8; }
-.goal { background: #f88; }
-.player { background: #00f; }
-.switch { background: #ff0; }
-.wallOn { background: #444; }
-.wallOff { background: #bbb; }
+/* 氷タイル（メイン） */
+.ice {
+  background-image: url('assets/ice_main.png'); /* 透明感のある氷床 */
+}
+
+/* 古代紋章入り氷タイル */
+.iceRune {
+  background-image: url('assets/ice_rune.png');
+}
+
+/* ひび割れ氷タイル */
+.iceCracked {
+  background-image: url('assets/ice_cracked.png');
+}
+
+/* 壁（氷柱＋岩） */
+.wall {
+  background-image: url('assets/wall_ice_rock.png');
+}
+
+/* スタート・ゴールの床 */
+.start {
+  background-image: url('assets/start_tile.png');
+}
+.goal {
+  background-image: url('assets/goal_tile.png');
+}
+
+/* スイッチ（魔法装置） */
+.switch {
+  background-image: url('assets/switch_magic.png');
+}
+
+/* 可動壁 ON/OFF */
+.wallOn {
+  background-image: url('assets/wall_on.png');
+}
+.wallOff {
+  background-image: url('assets/wall_off.png');
+}
+
+/* 落とし穴（割れた氷） */
+.hole {
+  background-image: url('assets/hole_ice.png');
+}
+
+/* プレイヤー：3D冒険者キャラ */
+.player {
+  background-image: url('assets/player_idle.png'); /* 退屈そうな立ち姿 */
+  background-size: cover;
+  background-position: center;
+}
+
+/* 滑り中（アイススケート風） */
+.player.slideUp    { background-image: url('assets/player_slide_up.png'); }
+.player.slideDown  { background-image: url('assets/player_slide_down.png'); }
+.player.slideLeft  { background-image: url('assets/player_slide_left.png'); }
+.player.slideRight { background-image: url('assets/player_slide_right.png'); }
 
 /* 左下の十字キー */
 #controls {
@@ -64,7 +118,9 @@ h1 {
   margin: 5px;
   border-radius: 10px;
   border: none;
-  background: #ddd;
+  background: #1b2435;
+  color: #eef7ff;
+  box-shadow: 0 0 6px rgba(0,0,0,0.7);
 }
 
 .row {

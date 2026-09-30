@@ -1,0 +1,73 @@
+body {
+  font-family: -apple-system, sans-serif;
+  text-align: center;
+  background: #eef7ff;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  margin-top: 60px;
+}
+
+#stageInfo {
+  margin: 5px 0 10px;
+}
+
+/* 右上：やりなおしボタン */
+#resetBtn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px 15px;
+  font-size: 18px;
+  background: #ff6666;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+/* ゲーム画面 */
+#game {
+  display: grid;
+  gap: 2px;
+  margin: 10px auto 20px;
+}
+
+/* タイル */
+.tile {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+.ice { background: #cce8ff; }
+.wall { background: #666; }
+.start { background: #8f8; }
+.goal { background: #f88; }
+.player { background: #00f; }
+.switch { background: #ff0; }
+.wallOn { background: #444; }
+.wallOff { background: #bbb; }
+
+/* 左下の十字キー */
+#controls {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  text-align: center;
+}
+
+#controls button {
+  font-size: 22px;
+  padding: 15px 25px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+  background: #ddd;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+}
